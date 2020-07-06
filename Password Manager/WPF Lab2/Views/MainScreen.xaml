@@ -1,0 +1,83 @@
+﻿<UserControl x:Class="WPF_Lab2.Views.MainScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPF_Lab2.Views"
+             xmlns:converters="clr-namespace:WPF_Lab2.Converters"
+             xmlns:models="clr-namespace:WPF_Lab2.Models"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:SelectedItemToControlConverter x:Key="selectedItemToContentControlConverter"/>
+        <converters:FalseToVisibilityConverter x:Key="falseToVisibilityconverter"/>
+        <converters:TrueToVisibilityConverter x:Key="trueToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Menu Grid.Row="0" HorizontalAlignment="Stretch" 
+              HorizontalContentAlignment="Right" FontSize="14"
+              Grid.ColumnSpan="5">
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel HorizontalAlignment="Right"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
+            
+            <MenuItem Header="Logout" Click="LogoutClicked"></MenuItem>
+            <MenuItem Header="Save" Click="SaveClicked"></MenuItem>
+        </Menu>
+
+        <TreeView x:Name="filesTreeView" Grid.Row="1">
+            <TreeView.Resources>
+
+                <ContextMenu x:Key="directoryContextMenu" StaysOpen="True">
+                    <MenuItem Header="{Binding Header}" IsEnabled="False"/>
+                    <MenuItem Header="Add directory" Click="AddNestedDirectory"/>
+                    <Separator/>
+                    <MenuItem Header="Add files">
+                        <MenuItem Header="Add new photo" Click="AddImage"/>
+                        <MenuItem Header="Add new passwords" Click="AddPassword"/>
+                    </MenuItem>
+                    <Separator/>
+                    <MenuItem Header="Rename" Click="RenameItem"/>
+                    <MenuItem Header="Delete" Click="DeleteItem"/>
+                </ContextMenu>
+
+                <ContextMenu x:Key="fileContextMenu" StaysOpen="True">
+                    <MenuItem Header="{Binding Header}" IsEnabled="False"/>
+                    <Separator/>
+                    <MenuItem Header="Rename"/>
+                    <MenuItem Header="Delete" Click="DeleteItem"/>
+                </ContextMenu>
+
+            </TreeView.Resources>
+
+            <TreeView.ContextMenu>
+                <ContextMenu x:Name="treeViewContextMenu">
+                    <MenuItem Header="Add directory" Click="AddDirectory"/>
+                    <MenuItem Header="Add files">
+                        <MenuItem Header="Password" Click="AddPassword"/>
+                        <MenuItem Header="Image" Click="AddImage"/>
+                    </MenuItem>
+                </ContextMenu>
+            </TreeView.ContextMenu>
+            
+        </TreeView>
+
+        <ContentControl x:Name="mainScreenContentControl" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                        Content="{Binding ElementName=filesTreeView, Path=SelectedItem, Converter={StaticResource selectedItemToContentControlConverter}}"
+                        DataContext="{Binding ElementName=mainScreenContentControl, Path=Content}"/>
+    </Grid>
+</UserControl>
